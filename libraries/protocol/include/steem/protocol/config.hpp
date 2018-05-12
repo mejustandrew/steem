@@ -111,6 +111,7 @@
 #define STEEM_REVERSE_AUCTION_WINDOW_SECONDS  (60*30) /// 30 minutes
 #define STEEM_MIN_VOTE_INTERVAL_SEC           3
 #define STEEM_VOTE_DUST_THRESHOLD             (50000000)
+#define STEEM_DELEGATION_RETURN_SECONDS       (60*60*24*10) /// 10 days
 
 #define STEEM_MIN_ROOT_COMMENT_INTERVAL       (fc::seconds(60*5)) // 5 minutes
 #define STEEM_MIN_REPLY_INTERVAL              (fc::seconds(20)) // 20 seconds

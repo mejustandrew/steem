@@ -2348,6 +2348,7 @@ void delegate_vesting_shares_evaluator::do_apply( const delegate_vesting_shares_
    else /* delegation->vesting_shares > op.vesting_shares */
    {
       auto delta = delegation->vesting_shares - op.vesting_shares;
+      auto delegation_return_period = STEEM_CASHOUT_WINDOW_SECONDS;
 
       if( op.vesting_shares.amount > 0 )
       {
@@ -2359,11 +2360,16 @@ void delegate_vesting_shares_evaluator::do_apply( const delegate_vesting_shares_
          FC_ASSERT( delegation->vesting_shares.amount > 0, "Delegation would set vesting_shares to zero, but it is already zero");
       }
 
+      if( _db.has_hardfork( STEEM_HARDFORK_0_20__2428 ) )
+      {
+         delegation_return_period = STEEM_DELEGATION_RETURN_SECONDS;
+      }
+
       _db.create< vesting_delegation_expiration_object >( [&]( vesting_delegation_expiration_object& obj )
       {
          obj.delegator = op.delegator;
          obj.vesting_shares = delta;
-         obj.expiration = std::max( _db.head_block_time() + STEEM_CASHOUT_WINDOW_SECONDS, delegation->min_delegation_time );
+         obj.expiration = std::max( _db.head_block_time() + delegation_return_period, delegation->min_delegation_time );
       });
 
       _db.modify( delegatee, [&]( account_object& a )
